@@ -48,8 +48,14 @@ module.exports.createListing = async (req, res, next) => {
             return res.status(400).json({ error: '"listing" is required' });
         }
 
-        let url = req.file?.path || "default_url";
-        let filename = req.file?.filename || "default_filename";
+        // If file upload fails
+        if (!req.file) {
+            console.error("❌ Multer Upload Error: No file received.");
+            return res.status(500).json({ error: "File upload failed" });
+        }
+
+        let url = req.file.path;
+        let filename = req.file.filename;
         
         const newlisting = new Listing(req.body.listing);
         newlisting.owner = req.user._id;
@@ -62,7 +68,7 @@ module.exports.createListing = async (req, res, next) => {
         res.redirect("/listings");
     } catch (err) {
         console.error("❌ Error creating listing:", err);
-        res.status(500).json({ error: "Internal Server Error", details: err.message });
+        next(err);
     }
 };
 
