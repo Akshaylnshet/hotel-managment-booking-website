@@ -5,7 +5,7 @@ const {reviewSchema}=require("./schema.js")
 const Review = require("./models/review.js")
 
 module.exports.isLoggedIn=(req,res,next)=>{
-    // console.log(req.path,"..",req.originalUrl);
+    console.log(req.path,"..",req.originalUrl);
     if(!req.isAuthenticated())
         {
             req.session.redirecturl=req.originalUrl;
@@ -35,7 +35,7 @@ module.exports.isowner =async(req,res,next)=>{
 
 module.exports.validateListing=(req,res,next)=>{
     let {error}=listingSchema.validate(req.body);
-   
+    console.log("Validation data:", req.body);
     if(error){
         let errmsg=error.details.map((el)=>el.message).join(",")
         throw new ExpressError(400,errmsg);

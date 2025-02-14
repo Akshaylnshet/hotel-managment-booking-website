@@ -28,16 +28,35 @@ module.exports.showListing=(async (req,res)=>{
     res.render("listings/show.ejs",{listing})
 })
 
-module.exports.createListing=async (req,res,next)=>{
-    let url=req.file.path;
-    let filename=req.file.filename;
-    const newlisting=new Listing(req.body.listing);
-    newlisting.owner=req.user._id;
-    newlisting.image={url,filename};
-    await newlisting.save();
-    req.flash("success","new listing created");
-    res.redirect("/listings");
-}
+// module.exports.createListing=async (req,res,next)=>{
+//     let url=req.file.path;
+//     let filename=req.file.filename;
+//     const newlisting=new Listing(req.body.listing);
+//     newlisting.owner=req.user._id;
+//     newlisting.image={url,filename};
+//     await newlisting.save();
+//     req.flash("success","new listing created");
+//     res.redirect("/listings");
+// }
+module.exports.createListing = async (req, res, next) => {
+    try {
+        console.log("Request body:", req.body);
+        console.log("File upload:", req.file);
+
+        let url = req.file.path;
+        let filename = req.file.filename;
+        const newlisting = new Listing(req.body.listing);
+        newlisting.owner = req.user._id;
+        newlisting.image = { url, filename };
+
+        await newlisting.save();
+        req.flash("success", "New listing created");
+        res.redirect("/listings");
+    } catch (err) {
+        console.error("Error creating listing:", err);
+        next(err);
+    }
+};
 
 module.exports.renderEditform=async (req,res)=>{
     let {id}=req.params;
