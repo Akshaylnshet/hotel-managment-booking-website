@@ -31,7 +31,7 @@ app.engine('ejs', ejsmate);
 app.use(express.static(path.join(__dirname, "public"))); // Fixed: use __dirname
 
 
-// const dburl=process.env.ATLASDB_URL
+const dburl=process.env.ATLASDB_URL
 main()
     .then(() => {
         console.log("Connected to DB");
@@ -43,25 +43,25 @@ main()
 
 // Database connection
     async function main() {
-        await mongoose.connect('mongodb://127.0.0.1:27017/test');
+        await mongoose.connect(dburl);
     }
 
-// //save in atlas db for session
-// const store= MongoStore.create({
-//      mongoUrl:dburl,
-//      crypto: {
-//         secret:process.env.SECRET,
-//     },
-//     touchAfter:24*3600,
-// })
+//save in atlas db for session
+const store= MongoStore.create({
+     mongoUrl:dburl,
+     crypto: {
+        secret:process.env.SECRET,
+    },
+    touchAfter:24*3600,
+})
 
-// store.on("error",()=>{
-//     console.log("ERROR in MONGO SESSION STORE",err);
-// })
+store.on("error",()=>{
+    console.log("ERROR in MONGO SESSION STORE",err);
+})
 
 // Session and flash
 const sessionoption = {
-    
+    store,
     secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
