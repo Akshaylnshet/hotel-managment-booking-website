@@ -40,27 +40,29 @@ module.exports.showListing=(async (req,res)=>{
 // }
 module.exports.createListing = async (req, res, next) => {
     try {
-        console.log("Request body:", req.body); // Check if form data is received
-        console.log("Uploaded file:", req.file); // Check if the file is uploaded
-        console.log("Current user:", req.user); // Ensure the user is authenticated
+        console.log("✅ Incoming request body:", req.body);
+        console.log("✅ Incoming file:", req.file);
 
-        if (!req.file) {
-            throw new Error("File upload failed - No file received");
+        if (!req.body.listing) {
+            console.error("❌ Validation error: 'listing' is required");
+            return res.status(400).json({ error: '"listing" is required' });
         }
 
-        let url = req.file.path;
-        let filename = req.file.filename;
+        let url = req.file?.path || "default_url";
+        let filename = req.file?.filename || "default_filename";
+        
         const newlisting = new Listing(req.body.listing);
         newlisting.owner = req.user._id;
         newlisting.image = { url, filename };
-
+        
         await newlisting.save();
+        console.log("✅ Listing created successfully:", newlisting);
+
         req.flash("success", "New listing created");
         res.redirect("/listings");
     } catch (err) {
-        console.error("Error creating listing:", err);
-        res.status(500).send("Internal Server Error: " + err.message);
-        next(err);
+        console.error("❌ Error creating listing:", err);
+        res.status(500).json({ error: "Internal Server Error", details: err.message });
     }
 };
 
