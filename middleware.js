@@ -35,9 +35,10 @@ module.exports.isowner =async(req,res,next)=>{
 
 module.exports.validateListing=(req,res,next)=>{
     let {error}=listingSchema.validate(req.body);
-    console.log("Validation data:", req.body);
+    
     if(error){
         let errmsg=error.details.map((el)=>el.message).join(",")
+        console.log("Validation data:", req.body);
         throw new ExpressError(400,errmsg);
     }
     else{
