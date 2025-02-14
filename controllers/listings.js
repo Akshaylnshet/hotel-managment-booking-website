@@ -40,8 +40,13 @@ module.exports.showListing=(async (req,res)=>{
 // }
 module.exports.createListing = async (req, res, next) => {
     try {
-        console.log("Request body:", req.body);
-        console.log("File upload:", req.file);
+        console.log("Request body:", req.body); // Check if form data is received
+        console.log("Uploaded file:", req.file); // Check if the file is uploaded
+        console.log("Current user:", req.user); // Ensure the user is authenticated
+
+        if (!req.file) {
+            throw new Error("File upload failed - No file received");
+        }
 
         let url = req.file.path;
         let filename = req.file.filename;
@@ -54,9 +59,11 @@ module.exports.createListing = async (req, res, next) => {
         res.redirect("/listings");
     } catch (err) {
         console.error("Error creating listing:", err);
+        res.status(500).send("Internal Server Error: " + err.message);
         next(err);
     }
 };
+
 
 module.exports.renderEditform=async (req,res)=>{
     let {id}=req.params;
