@@ -25,7 +25,8 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views")); // Fixed: use __dirname
 
 // Middleware
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); // ✅ Parses JSON requests
+app.use(express.urlencoded({ extended: true })); // ✅ Parses form-data requests
 app.use(methodoverride("_method"));
 app.engine('ejs', ejsmate);
 app.use(express.static(path.join(__dirname, "public"))); // Fixed: use __dirname
