@@ -114,6 +114,12 @@ app.use((err, req, res, next) => {
     res.status(statusCode).render("error.ejs", { message });
 });
 
+// Global Error Handling Middleware
+app.use((err, req, res, next) => {
+    console.error("❌ FULL ERROR:", err); // Log the full error
+    res.status(err.status || 500).json({ error: err.message || "Internal Server Error" });
+});
+
 // Start server
 app.listen(8080, () => {
     console.log("Server live on port 8080");
