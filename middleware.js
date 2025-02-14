@@ -46,12 +46,11 @@ module.exports.isowner =async(req,res,next)=>{
 //     }
 // }
 module.exports.validateListing = (req, res, next) => {
-    console.log("Incoming request body:", req.body); // Log full request body
-
+    console.log("✅ Validation data:", req.body);
     let { error } = listingSchema.validate(req.body);
     if (error) {
-        let errmsg = error.details.map((el) => el.message).join(", ");
-        console.error("Validation error:", errmsg);
+        console.error("❌ Validation failed:", error.details);
+        let errmsg = error.details.map((el) => el.message).join(",");
         throw new ExpressError(400, errmsg);
     } else {
         next();
